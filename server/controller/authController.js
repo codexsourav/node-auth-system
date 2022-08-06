@@ -1,6 +1,9 @@
 const users = require("../model/authSchema");
 const validator = require("validator");
-
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
 module.exports = {
   signup: async (req, res) => {
     const { name, email, uname, dob, pass } = req.body;
@@ -97,7 +100,42 @@ module.exports = {
     }
   },
   signin: async (req, res) => {
-    res.send("hello");
-    console.log(await users.find());
+    const { uname, pass } = req.body;
+
+    // chack Input username Or Password
+    if (!uname || !pass) {
+      res.status(406).json({
+        message: "Please Enter UserName or Password",
+        sts: false,
+        fld: "all",
+      });
+      return false;
+    }
+
+    const userdata = await users.findOne({ uname }, { uname: 1, pass: 1 });
+    if (!userdata) {
+      res.status(401).json({
+        message: "Invalid UserName or Password",
+        sts: false,
+        fld: "invalid data Fill",
+      });
+      return false;
+    }
+    // chack password
+    if (!bcrypt.compareSync(pass, userdata.pass)) {
+      res.status(401).json({
+        message: "Invalid UserName or Password",
+        sts: false,
+        fld: "invalid data Fill",
+      });
+      return false;
+    }
+    var token = jwt.sign(
+      { user: userdata._id },
+      "fjkhfdsjfhsdkjfsdhfiousdfhuio"
+    );
+    console.log(token);
+    res.cookie("cookie");
+    res.send("login ok");
   },
 };
