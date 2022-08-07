@@ -2,8 +2,7 @@ const users = require("../model/authSchema");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
-dotenv.config();
+
 module.exports = {
   signup: async (req, res) => {
     const { name, email, uname, dob, pass } = req.body;
