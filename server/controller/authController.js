@@ -100,8 +100,8 @@ module.exports = {
     }
   },
   signin: async (req, res) => {
-    const { uname, pass } = req.body;
-
+    const uname = "sourav";
+    const pass = "sourav";
     // chack Input username Or Password
     if (!uname || !pass) {
       res.status(406).json({
@@ -130,12 +130,20 @@ module.exports = {
       });
       return false;
     }
-    var token = jwt.sign(
-      { user: userdata._id },
-      "fjkhfdsjfhsdkjfsdhfiousdfhuio"
-    );
+    var token = jwt.sign({ user: userdata._id }, process.env.KEY);
+
     console.log(token);
-    res.cookie("cookie");
-    res.send("login ok");
+    res.cookie("user", token, {
+      expires: new Date(Date.now() + 90 * 24 * 3600000),
+      // cookie for 90 days
+    });
+
+    await users.updateOne({ _id: userdata._id }, { token });
+
+    res.status(200).json({
+      message: "Login SucessFull",
+      sts: true,
+      fld: null,
+    });
   },
 };
