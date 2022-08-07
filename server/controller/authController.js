@@ -24,12 +24,22 @@ module.exports = {
     }
 
     // chack email aleady exist or not
-    const chackemail = await users.find({ email });
-    if (chackemail.length) {
-      res.status(406).json({
-        message: "This Email Is Alrady Exist",
+    try {
+      const chackemail = await users.find({ email });
+      if (chackemail.length) {
+        res.status(406).json({
+          message: "This Email Is Alrady Exist",
+          sts: false,
+          fld: "email",
+        });
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(401).json({
+        message: "Error Server",
         sts: false,
-        fld: "email",
+        fld: null,
       });
       return false;
     }
@@ -51,12 +61,22 @@ module.exports = {
     }
 
     // chack dugnicate username
-    const chackuname = await users.find({ uname });
-    if (chackuname.length) {
-      res.status(406).json({
-        message: "This Username Is Alrady Exist",
+    try {
+      const chackuname = await users.find({ uname });
+      if (chackuname.length) {
+        res.status(406).json({
+          message: "This Username Is Alrady Exist",
+          sts: false,
+          fld: "uname",
+        });
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(401).json({
+        message: "Server Data Error",
         sts: false,
-        fld: "uname",
+        fld: null,
       });
       return false;
     }
@@ -88,13 +108,23 @@ module.exports = {
     }
 
     // Add Data To DataBase
+    try {
+      const saveData = new users(req.body);
+      const save = await saveData.save();
 
-    const saveData = new users(req.body);
-    const save = await saveData.save();
-    if (save) {
-      res
-        .status(201)
-        .json({ message: "Your Account is Created", sts: true, fld: null });
+      if (save) {
+        res
+          .status(201)
+          .json({ message: "Your Account is Created", sts: true, fld: null });
+        return false;
+      }
+    } catch (error) {
+      res.status(401).json({
+        message: "save Data error",
+        sts: false,
+        fld: null,
+      });
+      console.log(error);
       return false;
     }
   },
@@ -113,15 +143,26 @@ module.exports = {
       return false;
     }
 
-    const userdata = await users.findOne({ uname }, { uname: 1, pass: 1 });
-    if (!userdata) {
+    try {
+      var userdata = await users.findOne({ uname }, { uname: 1, pass: 1 });
+      if (!userdata) {
+        res.status(401).json({
+          message: "Invalid UserName or Password",
+          sts: false,
+          fld: "invalid data Fill",
+        });
+        return false;
+      }
+    } catch (error) {
       res.status(401).json({
-        message: "Invalid UserName or Password",
+        message: "save Data error",
         sts: false,
-        fld: "invalid data Fill",
+        fld: null,
       });
+      console.log(error);
       return false;
     }
+
     // chack password
     if (!bcrypt.compareSync(pass, userdata.pass)) {
       res.status(401).json({
@@ -137,7 +178,17 @@ module.exports = {
       // cookie for 90 days
     });
 
-    await users.updateOne({ _id: userdata._id }, { token });
+    try {
+      await users.updateOne({ _id: userdata._id }, { token });
+    } catch (error) {
+      res.status(401).json({
+        message: "save Data error",
+        sts: false,
+        fld: null,
+      });
+      console.log(error);
+      return false;
+    }
 
     res.status(200).json({
       message: "Login SucessFull",
