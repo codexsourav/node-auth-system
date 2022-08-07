@@ -98,9 +98,11 @@ module.exports = {
       return false;
     }
   },
+
+  /////// Login User //////////////////////////////////////////###########################
+
   signin: async (req, res) => {
-    const uname = "sourav";
-    const pass = "sourav";
+    const { uname, pass } = req.body;
     // chack Input username Or Password
     if (!uname || !pass) {
       res.status(406).json({
@@ -130,8 +132,6 @@ module.exports = {
       return false;
     }
     var token = jwt.sign({ user: userdata._id }, process.env.KEY);
-
-    console.log(token);
     res.cookie("user", token, {
       expires: new Date(Date.now() + 90 * 24 * 3600000),
       // cookie for 90 days

@@ -18,19 +18,19 @@ const authsts = async (req, res, next) => {
 
   try {
     const decode = jwt.verify(token, process.env.KEY);
-    if (decode) {
-      console.log("all is ok");
-    } else {
-      console.log("error");
+    if (!decode) {
+      res.status(200).json({
+        auth: false,
+      });
+      return false;
     }
-    console.log(decode);
   } catch (error) {
     res.status(200).json({
       auth: false,
     });
     return false;
   }
-
+  res.userinfo = userdata;
   next();
 };
 
