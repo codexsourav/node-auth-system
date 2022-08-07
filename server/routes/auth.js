@@ -6,7 +6,7 @@ const path = express.Router();
 path.post("/signin", auth.signin);
 path.post("/signup", auth.signup);
 path.get("/user", authsts, (req, res) => {
-  console.log(res.userinfo);
+  res.send(res.userinfo);
 });
 
 module.exports = path;

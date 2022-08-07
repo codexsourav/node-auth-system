@@ -27,7 +27,7 @@ module.exports = {
     try {
       const chackemail = await users.find({ email });
       if (chackemail.length) {
-        res.status(406).json({
+        res.status(500).json({
           message: "This Email Is Alrady Exist",
           sts: false,
           fld: "email",
@@ -36,8 +36,8 @@ module.exports = {
       }
     } catch (error) {
       console.log(error);
-      res.status(401).json({
-        message: "Error Server",
+      res.status(500).json({
+        message: "Server Data Error",
         sts: false,
         fld: null,
       });
@@ -73,7 +73,7 @@ module.exports = {
       }
     } catch (error) {
       console.log(error);
-      res.status(401).json({
+      res.status(500).json({
         message: "Server Data Error",
         sts: false,
         fld: null,
@@ -119,7 +119,7 @@ module.exports = {
         return false;
       }
     } catch (error) {
-      res.status(401).json({
+      res.status(500).json({
         message: "save Data error",
         sts: false,
         fld: null,
@@ -154,7 +154,7 @@ module.exports = {
         return false;
       }
     } catch (error) {
-      res.status(401).json({
+      res.status(500).json({
         message: "save Data error",
         sts: false,
         fld: null,
@@ -181,7 +181,7 @@ module.exports = {
     try {
       await users.updateOne({ _id: userdata._id }, { token });
     } catch (error) {
-      res.status(401).json({
+      res.status(500).json({
         message: "save Data error",
         sts: false,
         fld: null,
