@@ -56,7 +56,7 @@ module.exports = {
     if (!validator.isLength(uname, { min: 3 })) {
       res
         .status(406)
-        .json({ message: "username min 2 latters", sts: false, fld: "uname" });
+        .json({ message: "username min 3 latters", sts: false, fld: "uname" });
       return false;
     }
 
