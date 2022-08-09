@@ -196,4 +196,9 @@ module.exports = {
       fld: null,
     });
   },
+  // for get user data
+
+  user: (req, res) => {
+    res.status(200).json(res.userinfo);
+  },
 };
